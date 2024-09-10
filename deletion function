@@ -1,0 +1,140 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+typedef struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+} Node;
+
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed.\n");
+        exit(1);
+    }
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+
+Node* insertNode(Node* root, int data) {
+    if (root == NULL) {
+        
+        return createNode(data);
+    }
+
+    
+    if (data < root->data) {
+        root->left = insertNode(root->left, data);
+    } else if (data > root->data) {
+        root->right = insertNode(root->right, data);
+    } else {
+       
+        printf("Value %d already exists in the tree.\n", data);
+    }
+    return root;
+}
+
+
+Node* findMin(Node* root) {
+    while (root->left != NULL) {
+        root = root->left;
+    }
+    return root;
+}
+
+
+Node* deleteNode(Node* root, int data) {
+    if (root == NULL) {
+        return root;  
+    }
+
+    if (data < root->data) {
+        root->left = deleteNode(root->left, data);
+    } else if (data > root->data) {
+        root->right = deleteNode(root->right, data);
+    } else {
+        
+
+       
+        if (root->left == NULL) {
+            Node* temp = root->right;
+            free(root);
+            return temp;
+        } else if (root->right == NULL) {
+            Node* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+      
+        Node* temp = findMin(root->right);  // Find the in-order successor
+        root->data = temp->data;            // Copy the in-order successor's value to this node
+        root->right = deleteNode(root->right, temp->data);  // Delete the in-order successor
+    }
+
+    return root;
+}
+
+
+void inorderTraversal(Node* root) {
+    if (root != NULL) {
+        inorderTraversal(root->left);      // Visit left subtree
+        printf("%d ", root->data);         // Print root data
+        inorderTraversal(root->right);     // Visit right subtree
+    }
+}
+
+
+void freeTree(Node* root) {
+    if (root != NULL) {
+        freeTree(root->left);
+        freeTree(root->right);
+        free(root);
+    }
+}
+
+int main() {
+    Node* root = NULL;
+    int value, choice;
+
+    
+    do {
+        printf("Enter a value to insert into the binary search tree: ");
+        scanf("%d", &value);
+        root = insertNode(root, value);
+
+        printf("Do you want to insert another value? (1 = Yes, 0 = No): ");
+        scanf("%d", &choice);
+    } while (choice == 1);
+
+ 
+    printf("In-order traversal of the binary search tree: ");
+    inorderTraversal(root);
+    printf("\n");
+
+   
+    do {
+        printf("Enter a value to delete from the binary search tree: ");
+        scanf("%d", &value);
+        root = deleteNode(root, value);
+
+        printf("Do you want to delete another value? (1 = Yes, 0 = No): ");
+        scanf("%d", &choice);
+    } while (choice == 1);
+
+    
+    printf("In-order traversal of the binary search tree after deletion: ");
+    inorderTraversal(root);
+    printf("\n");
+
+  
+    freeTree(root);
+
+    return 0;
+}
