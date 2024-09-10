@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Define the structure for a tree node
+
 typedef struct Node {
     int data;
     struct Node *left;
     struct Node *right;
 } Node;
 
-// Function to create a new node
+
 Node* createNode(int data) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     if (newNode == NULL) {
@@ -21,14 +21,14 @@ Node* createNode(int data) {
     return newNode;
 }
 
-// Function to insert a node into the binary tree
+
 Node* insertNode(Node* root, int data) {
     if (root == NULL) {
         // If the tree is empty, create a new root node
         return createNode(data);
     }
 
-    // Otherwise, insert the node in the correct position
+   
     if (data < root->data) {
         root->left = insertNode(root->left, data);
     } else {
@@ -37,7 +37,7 @@ Node* insertNode(Node* root, int data) {
     return root;
 }
 
-// Function to perform an in-order traversal of the tree
+
 void inorderTraversal(Node* root) {
     if (root != NULL) {
         inorderTraversal(root->left);
@@ -46,7 +46,7 @@ void inorderTraversal(Node* root) {
     }
 }
 
-// Function to free the memory allocated for the tree
+
 void freeTree(Node* root) {
     if (root != NULL) {
         freeTree(root->left);
@@ -72,7 +72,7 @@ int main() {
     inorderTraversal(root);
     printf("\n");
 
-    // Free the memory allocated for the tree
+  
     freeTree(root);
 
     return 0;
