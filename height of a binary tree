@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a tree node
+typedef struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+} Node;
+
+// Function to create a new node
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed.\n");
+        exit(1);
+    }
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Function to insert a node into the binary search tree
+Node* insertNode(Node* root, int data) {
+    if (root == NULL) {
+        // If the tree is empty, create a new root node
+        return createNode(data);
+    }
+
+    // Otherwise, insert the node in the correct position
+    if (data < root->data) {
+        root->left = insertNode(root->left, data);
+    } else if (data > root->data) {
+        root->right = insertNode(root->right, data);
+    } else {
+        // Duplicate values are not allowed in this BST
+        printf("Value %d already exists in the tree.\n", data);
+    }
+    return root;
+}
+
+// Function to calculate the height of the binary tree
+int height(Node* root) {
+    if (root == NULL) {
+        // The height of an empty tree is -1 (or 0 if you prefer)
+        return -1;
+    }
+
+    // Calculate the height of left and right subtrees
+    int leftHeight = height(root->left);
+    int rightHeight = height(root->right);
+
+    // Return the height of the tree as the maximum height of subtrees plus 1
+    return (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
+}
+
+// Function to perform an in-order traversal of the binary search tree
+void inorderTraversal(Node* root) {
+    if (root != NULL) {
+        inorderTraversal(root->left);      // Visit left subtree
+        printf("%d ", root->data);         // Print root data
+        inorderTraversal(root->right);     // Visit right subtree
+    }
+}
+
+// Function to free the memory allocated for the binary search tree
+void freeTree(Node* root) {
+    if (root != NULL) {
+        freeTree(root->left);
+        freeTree(root->right);
+        free(root);
+    }
+}
+
+int main() {
+    Node* root = NULL;
+    int value, choice;
+
+    // Input loop for building the binary search tree
+    do {
+        printf("Enter a value to insert into the binary search tree: ");
+        scanf("%d", &value);
+        root = insertNode(root, value);
+
+        printf("Do you want to insert another value? (1 = Yes, 0 = No): ");
+        scanf("%d", &choice);
+    } while (choice == 1);
+
+    // Print the elements of the binary search tree in sorted order
+    printf("In-order traversal of the binary search tree: ");
+    inorderTraversal(root);
+    printf("\n");
+
+    // Calculate and print the height of the binary search tree
+    int treeHeight = height(root);
+    printf("The height of the binary search tree is: %d\n", treeHeight);
+
+    // Free the memory allocated for the binary search tree
+    freeTree(root);
+
+    return 0;
+}
